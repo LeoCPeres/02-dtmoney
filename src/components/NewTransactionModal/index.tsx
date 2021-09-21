@@ -3,7 +3,8 @@ import { Container, TransactionTypeContainer, RadioBox } from "./styles";
 import closeImg from "../../assets/fechar.svg";
 import incomeImg from "../../assets/entradas.svg";
 import outcomeImg from "../../assets/saidas.svg";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
+import { api } from "../../services/api";
 
 interface NewTransactionModalProps {
   isOpen: boolean;
@@ -15,6 +16,22 @@ export function NewTransactionModal({
   onRequestClose,
 }: NewTransactionModalProps) {
   const [type, setType] = useState("deposit");
+  const [title, setTitle] = useState("");
+  const [category, setCategory] = useState("");
+  const [amount, setAmount] = useState(0);
+
+  function handleCrateNewTransaction(event: FormEvent) {
+    event.preventDefault();
+
+    const data = {
+      title,
+      amount,
+      category,
+      type,
+    };
+
+    api.post("/transactions", data);
+  }
 
   return (
     <Modal
@@ -31,11 +48,20 @@ export function NewTransactionModal({
         <img src={closeImg} alt="Fechar Modal" />
       </button>
 
-      <Container>
+      <Container onSubmit={handleCrateNewTransaction}>
         <h2>Cadastrar transação</h2>
 
-        <input placeholder="Título" />
-        <input placeholder="Valor" type="number" />
+        <input
+          placeholder="Título"
+          value={title}
+          onChange={(event) => setTitle(event.target.value)}
+        />
+        <input
+          placeholder="Valor"
+          type="number"
+          value={amount}
+          onChange={(event) => setAmount(Number(event.target.value))}
+        />
 
         <TransactionTypeContainer>
           <RadioBox
@@ -44,6 +70,7 @@ export function NewTransactionModal({
               setType("deposit");
             }}
             isActive={type === "deposit"}
+            activeColor="green"
           >
             <img src={incomeImg} alt="Entrada" />
             <span>Entrada</span>
@@ -55,13 +82,18 @@ export function NewTransactionModal({
               setType("withdraw");
             }}
             isActive={type === "withdraw"}
+            activeColor="red"
           >
             <img src={outcomeImg} alt="Saída" />
             <span>Saída</span>
           </RadioBox>
         </TransactionTypeContainer>
 
-        <input placeholder="Categoria" />
+        <input
+          placeholder="Categoria"
+          value={category}
+          onChange={(event) => setCategory(event.target.value)}
+        />
 
         <button type="submit">Cadastrar</button>
       </Container>
