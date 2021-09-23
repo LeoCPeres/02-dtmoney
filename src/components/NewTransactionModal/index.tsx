@@ -3,9 +3,8 @@ import { Container, TransactionTypeContainer, RadioBox } from "./styles";
 import closeImg from "../../assets/fechar.svg";
 import incomeImg from "../../assets/entradas.svg";
 import outcomeImg from "../../assets/saidas.svg";
-import { FormEvent, useState, useContext } from "react";
-import { api } from "../../services/api";
-import { TransactionsContext } from "../../contexts/TransactionsContext";
+import { FormEvent, useState } from "react";
+import { useTransactions } from "../../contexts/TransactionsContext";
 
 interface NewTransactionModalProps {
   isOpen: boolean;
@@ -21,7 +20,7 @@ export function NewTransactionModal({
   const [category, setCategory] = useState("");
   const [amount, setAmount] = useState(0);
 
-  const { transactions, createTransaction } = useContext(TransactionsContext);
+  const { transactions, createTransaction } = useTransactions();
 
   async function handleCrateNewTransaction(event: FormEvent) {
     event.preventDefault();
