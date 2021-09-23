@@ -20,19 +20,24 @@ export function NewTransactionModal({
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [amount, setAmount] = useState(0);
-  const [createdAt, setCreatedAt] = useState("");
 
   const { transactions, createTransaction } = useContext(TransactionsContext);
 
-  function handleCrateNewTransaction(event: FormEvent) {
+  async function handleCrateNewTransaction(event: FormEvent) {
     event.preventDefault();
 
-    createTransaction({
+    await createTransaction({
       title,
       amount,
       category,
       type,
     });
+
+    onRequestClose();
+    setTitle("");
+    setAmount(0);
+    setCategory("");
+    setType("deposit");
   }
 
   return (
@@ -97,16 +102,7 @@ export function NewTransactionModal({
           onChange={(event) => setCategory(event.target.value)}
         />
 
-        <button
-          type="submit"
-          onClick={() => {
-            var date = new Date();
-            var date2 = date.toDateString();
-            setCreatedAt(date2);
-          }}
-        >
-          Cadastrar
-        </button>
+        <button type="submit">Cadastrar</button>
       </Container>
     </Modal>
   );
