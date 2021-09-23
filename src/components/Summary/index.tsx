@@ -1,7 +1,6 @@
 import incomeImg from "../../assets/entradas.svg";
 import outcomeImg from "../../assets/saidas.svg";
 import totalImg from "../../assets/total.svg";
-import { useContext } from "react";
 
 import { Container } from "./styles";
 import { useTransactions } from "../../contexts/TransactionsContext";

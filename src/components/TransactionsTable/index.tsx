@@ -1,7 +1,6 @@
-import { useContext, useEffect, useState } from "react";
 import { useTransactions } from "../../contexts/TransactionsContext";
-import { api } from "../../services/api";
 import { Container } from "./styles";
+import editImg from "../../assets/edit.svg";
 
 export function TransactionsTable() {
   const { transactions } = useTransactions();
@@ -15,6 +14,7 @@ export function TransactionsTable() {
             <th>Valor</th>
             <th>Categoria</th>
             <th>Data</th>
+            <th>Ações</th>
           </tr>
         </thead>
 
@@ -35,6 +35,11 @@ export function TransactionsTable() {
                   {new Intl.DateTimeFormat("pt-BR").format(
                     new Date(transaction.createdAt)
                   )}
+                </td>
+                <td className="edit">
+                  <button type="button">
+                    <img src={editImg} alt="Ações" />
+                  </button>
                 </td>
               </tr>
             );

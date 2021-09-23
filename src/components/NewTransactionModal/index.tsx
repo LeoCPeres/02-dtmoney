@@ -20,7 +20,7 @@ export function NewTransactionModal({
   const [category, setCategory] = useState("");
   const [amount, setAmount] = useState(0);
 
-  const { transactions, createTransaction } = useTransactions();
+  const { createTransaction } = useTransactions();
 
   async function handleCrateNewTransaction(event: FormEvent) {
     event.preventDefault();

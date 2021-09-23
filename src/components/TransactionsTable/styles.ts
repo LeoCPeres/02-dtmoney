@@ -20,7 +20,15 @@ export const Container = styled.div`
       border: 0;
       background: var(--shape);
       color: var(--text-body);
-      border-radius: 0.25rem;
+      border-radius: 0.25rem 0 0 0.25rem;
+
+      & + td {
+        border-radius: 0;
+      }
+
+      &.edit {
+        border-radius: 0 0.25rem 0.25rem 0;
+      }
 
       &:first-child {
         color: var(--text-title);
@@ -32,6 +40,17 @@ export const Container = styled.div`
 
       &.withdraw {
         color: var(--red);
+      }
+
+      button {
+        background: transparent;
+        border: none;
+        margin: 0;
+        padding: 0;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
     }
   }
