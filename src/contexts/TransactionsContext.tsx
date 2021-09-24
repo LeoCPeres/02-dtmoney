@@ -14,6 +14,9 @@ interface Transaction {
   type: string;
   amount: number;
   createdAt: string;
+  then?: string;
+  catch?: string;
+  finally?: string;
 }
 
 interface TransactionsProviderProps {
@@ -22,7 +25,15 @@ interface TransactionsProviderProps {
 
 interface TransactionsContextData {
   transactions: Transaction[];
+  isNewTransactionModalOpen: boolean;
+  isEditTransactionModalOpen: boolean;
+  success: boolean;
+  handleSetSuccess: () => void;
   createTransaction: (transaction: TransactionInput) => Promise<void>;
+  handleOpenNewTransactionModal: () => void;
+  handleCloseNewTransactionModal: () => void;
+  handleOpenEditTransactionModal: (id: number) => void;
+  handleCloseEditTransactionModal: () => void;
 }
 
 // interface TransactionInput {
@@ -40,12 +51,38 @@ const TransactionsContext = createContext<TransactionsContextData>(
 
 export function TransactionsProvider({ children }: TransactionsProviderProps) {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [isNewTransactionModalOpen, setIsNewTransactionModalOpen] =
+    useState(false);
+  const [isEditTransactionModalOpen, setIsEditTransactionModalOpen] =
+    useState(false);
+
+  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     api
       .get("/transactions")
       .then((response) => setTransactions(response.data.transactions));
   }, []);
+
+  function handleOpenNewTransactionModal() {
+    setIsNewTransactionModalOpen(true);
+  }
+
+  function handleCloseNewTransactionModal() {
+    setIsNewTransactionModalOpen(false);
+  }
+
+  function handleOpenEditTransactionModal(id: number) {
+    setIsEditTransactionModalOpen(true);
+  }
+
+  function handleCloseEditTransactionModal() {
+    setIsEditTransactionModalOpen(false);
+  }
+
+  function handleSetSuccess() {
+    setSuccess(true);
+  }
 
   async function createTransaction(transactionInput: TransactionInput) {
     const response = await api.post("/transactions", {
@@ -54,11 +91,25 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
     });
     const { transaction } = response.data;
 
+    setSuccess(true);
     setTransactions([...transactions, transaction]);
   }
 
   return (
-    <TransactionsContext.Provider value={{ transactions, createTransaction }}>
+    <TransactionsContext.Provider
+      value={{
+        transactions,
+        success,
+        handleSetSuccess,
+        createTransaction,
+        handleCloseEditTransactionModal,
+        handleCloseNewTransactionModal,
+        handleOpenEditTransactionModal,
+        handleOpenNewTransactionModal,
+        isEditTransactionModalOpen,
+        isNewTransactionModalOpen,
+      }}
+    >
       {children}
     </TransactionsContext.Provider>
   );
