@@ -17,7 +17,6 @@ export function NewTransactionModal() {
     createTransaction,
     isNewTransactionModalOpen,
     handleCloseNewTransactionModal,
-    handleSetSuccess,
   } = useTransactions();
 
   async function handleCrateNewTransaction(event: FormEvent) {

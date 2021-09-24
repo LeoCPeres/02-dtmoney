@@ -3,7 +3,7 @@ import { Container } from "./styles";
 import editImg from "../../assets/edit.svg";
 
 export function TransactionsTable() {
-  const { transactions } = useTransactions();
+  const { transactions, handleOpenEditTransactionModal } = useTransactions();
 
   return (
     <Container>
@@ -37,7 +37,12 @@ export function TransactionsTable() {
                   )}
                 </td>
                 <td className="edit">
-                  <button type="button">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handleOpenEditTransactionModal(transaction.id)
+                    }
+                  >
                     <img src={editImg} alt="Ações" />
                   </button>
                 </td>

@@ -14,9 +14,6 @@ interface Transaction {
   type: string;
   amount: number;
   createdAt: string;
-  then?: string;
-  catch?: string;
-  finally?: string;
 }
 
 interface TransactionsProviderProps {
@@ -27,8 +24,7 @@ interface TransactionsContextData {
   transactions: Transaction[];
   isNewTransactionModalOpen: boolean;
   isEditTransactionModalOpen: boolean;
-  success: boolean;
-  handleSetSuccess: () => void;
+  transactionId: number;
   createTransaction: (transaction: TransactionInput) => Promise<void>;
   handleOpenNewTransactionModal: () => void;
   handleCloseNewTransactionModal: () => void;
@@ -55,8 +51,7 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
     useState(false);
   const [isEditTransactionModalOpen, setIsEditTransactionModalOpen] =
     useState(false);
-
-  const [success, setSuccess] = useState(false);
+  const [transactionId, setTransactionId] = useState(0);
 
   useEffect(() => {
     api
@@ -74,14 +69,12 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
 
   function handleOpenEditTransactionModal(id: number) {
     setIsEditTransactionModalOpen(true);
+    setTransactionId(id);
   }
 
   function handleCloseEditTransactionModal() {
     setIsEditTransactionModalOpen(false);
-  }
-
-  function handleSetSuccess() {
-    setSuccess(true);
+    setTransactionId(2);
   }
 
   async function createTransaction(transactionInput: TransactionInput) {
@@ -91,7 +84,6 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
     });
     const { transaction } = response.data;
 
-    setSuccess(true);
     setTransactions([...transactions, transaction]);
   }
 
@@ -99,8 +91,7 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
     <TransactionsContext.Provider
       value={{
         transactions,
-        success,
-        handleSetSuccess,
+        transactionId,
         createTransaction,
         handleCloseEditTransactionModal,
         handleCloseNewTransactionModal,
