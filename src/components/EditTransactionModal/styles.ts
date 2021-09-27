@@ -26,7 +26,7 @@ export const Container = styled.form`
     }
   }
 
-  button[type="submit"] {
+  button[type="submit"].save {
     width: 100%;
     height: 4rem;
     padding: 0 1.5rem;
@@ -36,6 +36,25 @@ export const Container = styled.form`
     border: 0;
     font-size: 1rem;
     margin-top: 1.5rem;
+    font-weight: 600;
+
+    transition: filter 0.2s;
+
+    &:hover {
+      filter: brightness(0.9);
+    }
+  }
+
+  button[type="button"].delete {
+    width: 100%;
+    height: 4rem;
+    padding: 0 1.5rem;
+    color: #fff;
+    background: var(--red);
+    border-radius: 0.25rem;
+    border: 0;
+    font-size: 1rem;
+    margin-top: 1rem;
     font-weight: 600;
 
     transition: filter 0.2s;

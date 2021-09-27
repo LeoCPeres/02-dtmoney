@@ -24,12 +24,30 @@ interface TransactionsContextData {
   transactions: Transaction[];
   isNewTransactionModalOpen: boolean;
   isEditTransactionModalOpen: boolean;
-  transactionId: number;
+  title: string;
+  category: string;
+  type: string;
+  amount: number;
+
+  transaction: {
+    id: number;
+    title: string;
+    category: string;
+    type: string;
+    amount: number;
+    createdAt: string;
+  };
+
   createTransaction: (transaction: TransactionInput) => Promise<void>;
   handleOpenNewTransactionModal: () => void;
   handleCloseNewTransactionModal: () => void;
   handleOpenEditTransactionModal: (id: number) => void;
   handleCloseEditTransactionModal: () => void;
+  handleSetTitle: (title: string) => void;
+  handleSetCategory: (category: string) => void;
+  handleSetAmount: (amount: number) => void;
+  handleSetType: (type: string) => void;
+  editTransaction: (transactionInput: TransactionInput) => Promise<void>;
 }
 
 // interface TransactionInput {
@@ -51,7 +69,13 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
     useState(false);
   const [isEditTransactionModalOpen, setIsEditTransactionModalOpen] =
     useState(false);
-  const [transactionId, setTransactionId] = useState(0);
+  const [transaction, setTransaction] = useState<Transaction>(
+    {} as Transaction
+  );
+  const [type, setType] = useState("deposit");
+  const [title, setTitle] = useState("");
+  const [category, setCategory] = useState("");
+  const [amount, setAmount] = useState(0);
 
   useEffect(() => {
     api
@@ -67,14 +91,50 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
     setIsNewTransactionModalOpen(false);
   }
 
+  const [id, setId] = useState(1);
+
   function handleOpenEditTransactionModal(id: number) {
     setIsEditTransactionModalOpen(true);
-    setTransactionId(id);
+    setTransaction(transactions[id - 1]);
+    setId(id);
   }
+
+  useEffect(() => {
+    setTitle(transaction.title);
+    setAmount(transaction.amount);
+    setType(transaction.type);
+    setCategory(transaction.category);
+  }, [id]);
 
   function handleCloseEditTransactionModal() {
     setIsEditTransactionModalOpen(false);
-    setTransactionId(2);
+  }
+
+  function handleSetTitle(title: string) {
+    setTitle(title);
+  }
+
+  function handleSetAmount(amount: number) {
+    setAmount(amount);
+  }
+
+  function handleSetType(type: string) {
+    setType(type);
+  }
+
+  function handleSetCategory(category: string) {
+    setCategory(category);
+  }
+
+  async function editTransaction(transactionInput: TransactionInput) {
+    const response = await api.patch(`/transactions/${id}`, {
+      ...transactionInput,
+    });
+
+    const { editedTransaction } = response.data;
+
+    setTransactions([editedTransaction]);
+    console.log(editedTransaction);
   }
 
   async function createTransaction(transactionInput: TransactionInput) {
@@ -84,15 +144,24 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
     });
     const { transaction } = response.data;
 
-    setTransactions([...transactions, transaction]);
+    setTransactions([transaction]);
   }
 
   return (
     <TransactionsContext.Provider
       value={{
         transactions,
-        transactionId,
+        transaction,
         createTransaction,
+        title,
+        category,
+        type,
+        amount,
+        handleSetAmount,
+        handleSetCategory,
+        handleSetTitle,
+        editTransaction,
+        handleSetType,
         handleCloseEditTransactionModal,
         handleCloseNewTransactionModal,
         handleOpenEditTransactionModal,

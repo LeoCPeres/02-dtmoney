@@ -59,6 +59,21 @@ createServer({
 
       return schema.create("transaction", data);
     });
+
+    this.delete('/transactions/transaction:id', (schema, request) => {
+      let id = request.params.id
+
+      return this.find(id).destroy();
+
+    });
+
+    this.patch("/transactions/:id", (schema, request) => {
+      const newData =JSON.parse(request.requestBody);
+      let id = request.params.id;
+      const transaction = schema.transactions.find(id);
+
+      return transaction.update(newData);
+    })
   },
 });
 

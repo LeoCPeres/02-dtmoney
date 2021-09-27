@@ -22,6 +22,20 @@ export function NewTransactionModal() {
   async function handleCrateNewTransaction(event: FormEvent) {
     event.preventDefault();
 
+    if (title === "") {
+      toast.error("Transação sem título");
+      return;
+    }
+    if (amount === 0) {
+      toast.error("Transação sem valor");
+      return;
+    }
+
+    if (category === "") {
+      toast.error("Transação sem categoria");
+      return;
+    }
+
     await createTransaction({
       title,
       amount,

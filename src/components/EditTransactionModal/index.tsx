@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import Modal from "react-modal";
 import closeImg from "../../assets/fechar.svg";
 import incomeImg from "../../assets/entradas.svg";
 import outcomeImg from "../../assets/saidas.svg";
 import { useTransactions } from "../../contexts/TransactionsContext";
 import { Container, RadioBox, TransactionTypeContainer } from "./styles";
+import toast from "react-hot-toast";
 interface Transaction {
   id: number;
   title: string;
@@ -15,24 +16,52 @@ interface Transaction {
 }
 
 export function EditTransactionModal() {
-  const [type, setType] = useState("deposit");
-  const [title, setTitle] = useState("");
-  const [category, setCategory] = useState("");
-  const [amount, setAmount] = useState(0);
-  const [transaction, setTransaction] = useState<Transaction>(
-    {} as Transaction
-  );
-
   const {
     isEditTransactionModalOpen,
     handleCloseEditTransactionModal,
-    transactionId,
+    transaction,
     transactions,
+    title,
+    amount,
+    category,
+    type,
+    handleSetAmount,
+    handleSetCategory,
+    handleSetType,
+    handleSetTitle,
+    editTransaction,
   } = useTransactions();
 
-  useEffect(() => {
-    setTransaction(transactions[1]);
-  }, [transactionId]);
+  async function handleEditTransaction(event: FormEvent) {
+    event.preventDefault();
+
+    if (title === "") {
+      toast.error("Transação sem título");
+      return;
+    }
+    if (amount === 0) {
+      toast.error("Transação sem valor");
+      return;
+    }
+
+    if (category === "") {
+      toast.error("Transação sem categoria");
+      return;
+    }
+
+    await editTransaction({
+      title,
+      amount,
+      category,
+      type,
+    });
+
+    handleCloseEditTransactionModal();
+    handleSetTitle("");
+    handleSetAmount(0);
+    handleSetCategory("");
+    handleSetType("deposit");
+  }
 
   return (
     <Modal
@@ -49,26 +78,26 @@ export function EditTransactionModal() {
         <img src={closeImg} alt="Fechar Modal" />
       </button>
 
-      <Container>
+      <Container onSubmit={handleEditTransaction}>
         <h2>Editar transação</h2>
 
         <input
           placeholder="Título"
           value={title}
-          onChange={(event) => setTitle(event.target.value)}
+          onChange={(event) => handleSetTitle(event.target.value)}
         />
         <input
           placeholder="Valor"
           type="number"
           value={amount}
-          onChange={(event) => setAmount(Number(event.target.value))}
+          onChange={(event) => handleSetAmount(Number(event.target.value))}
         />
 
         <TransactionTypeContainer>
           <RadioBox
             type="button"
             onClick={() => {
-              setType("deposit");
+              handleSetType("deposit");
             }}
             isActive={type === "deposit"}
             activeColor="green"
@@ -80,7 +109,7 @@ export function EditTransactionModal() {
           <RadioBox
             type="button"
             onClick={() => {
-              setType("withdraw");
+              handleSetType("withdraw");
             }}
             isActive={type === "withdraw"}
             activeColor="red"
@@ -93,10 +122,15 @@ export function EditTransactionModal() {
         <input
           placeholder="Categoria"
           value={category}
-          onChange={(event) => setCategory(event.target.value)}
+          onChange={(event) => handleSetCategory(event.target.value)}
         />
 
-        <button type="submit">Cadastrar</button>
+        <button type="submit" className="save">
+          Salvar
+        </button>
+        <button type="button" className="delete">
+          Apagar
+        </button>
       </Container>
     </Modal>
   );
