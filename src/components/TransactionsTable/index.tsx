@@ -24,7 +24,8 @@ export function TransactionsTable() {
         </thead>
 
         <tbody>
-          {transactions.map === null ? (
+          {console.log(transactions)}
+          {transactions.length === 0 ? (
             <h1>Vazio</h1>
           ) : (
             transactions.map((transaction) => {

@@ -42,9 +42,7 @@ export function DeleteTransactionModal() {
       <Container onSubmit={handleDeleteTransaction}>
         <img src={trashImg} alt="" />
         <h2>Você realmente deseja deletar</h2>
-        <h3>
-          "{title}"<span> ?</span>
-        </h3>
+
         <button type="submit" className="save">
           Apagar
         </button>

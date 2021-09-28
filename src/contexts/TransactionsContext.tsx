@@ -93,7 +93,7 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
     setIsNewTransactionModalOpen(false);
   }
 
-  const [id, setId] = useState(1);
+  const [id, setId] = useState(0);
 
   function handleOpenEditTransactionModal(id: number) {
     setIsEditTransactionModalOpen(true);
@@ -106,7 +106,10 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
     setAmount(transaction.amount);
     setType(transaction.type);
     setCategory(transaction.category);
+    setId(id);
   }, [id]);
+
+  console.log(id);
 
   function handleCloseEditTransactionModal() {
     setIsEditTransactionModalOpen(false);
@@ -145,16 +148,16 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
   }
 
   async function deleteTransaction() {
+    console.log(id);
     const responseDelete = await api.delete(`/transactions/${id}`);
 
     const filteredTransactions = transactions.filter(
       (transaction) => transaction.id !== id
     );
-
+    console.log(filteredTransactions);
     setTransactions(filteredTransactions);
 
     console.log(responseDelete.status);
-    console.log(transactions);
   }
 
   useEffect(() => {
