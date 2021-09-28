@@ -29,6 +29,7 @@ export function EditTransactionModal() {
     handleSetCategory,
     handleSetType,
     handleSetTitle,
+    id,
     editTransaction,
   } = useTransactions();
 
@@ -50,6 +51,7 @@ export function EditTransactionModal() {
     }
 
     await editTransaction({
+      id,
       title,
       amount,
       category,

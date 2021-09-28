@@ -28,6 +28,7 @@ interface TransactionsContextData {
   category: string;
   type: string;
   amount: number;
+  id: number;
 
   transaction: {
     id: number;
@@ -47,7 +48,7 @@ interface TransactionsContextData {
   handleSetCategory: (category: string) => void;
   handleSetAmount: (amount: number) => void;
   handleSetType: (type: string) => void;
-  editTransaction: (transactionInput: TransactionInput) => Promise<void>;
+  editTransaction: (transactionInput: TransactionEdit) => Promise<void>;
 }
 
 // interface TransactionInput {
@@ -58,6 +59,7 @@ interface TransactionsContextData {
 // }
 
 type TransactionInput = Omit<Transaction, "id" | "createdAt">;
+type TransactionEdit = Omit<Transaction, "createdAt">;
 
 const TransactionsContext = createContext<TransactionsContextData>(
   {} as TransactionsContextData
@@ -76,12 +78,6 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [amount, setAmount] = useState(0);
-
-  useEffect(() => {
-    api
-      .get("/transactions")
-      .then((response) => setTransactions(response.data.transactions));
-  }, []);
 
   function handleOpenNewTransactionModal() {
     setIsNewTransactionModalOpen(true);
@@ -126,16 +122,27 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
     setCategory(category);
   }
 
-  async function editTransaction(transactionInput: TransactionInput) {
-    const response = await api.patch(`/transactions/${id}`, {
-      ...transactionInput,
-    });
+  async function editTransaction(transactionInput: TransactionEdit) {
+    const newTransaction = transactions.map((transaction: Transaction) =>
+      transaction.id === id
+        ? {
+            ...transaction,
+            title: title,
+            category: category,
+            amount: amount,
+            type: type,
+          }
+        : transaction
+    );
 
-    const { editedTransaction } = response.data;
-
-    setTransactions([editedTransaction]);
-    console.log(editedTransaction);
+    setTransactions(newTransaction);
   }
+
+  useEffect(() => {
+    api
+      .get("/transactions")
+      .then((response) => setTransactions(response.data.transactions));
+  }, []);
 
   async function createTransaction(transactionInput: TransactionInput) {
     const response = await api.post("/transactions", {
@@ -144,7 +151,7 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
     });
     const { transaction } = response.data;
 
-    setTransactions([transaction]);
+    setTransactions([...transactions, transaction]);
   }
 
   return (
@@ -156,6 +163,7 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
         title,
         category,
         type,
+        id,
         amount,
         handleSetAmount,
         handleSetCategory,
