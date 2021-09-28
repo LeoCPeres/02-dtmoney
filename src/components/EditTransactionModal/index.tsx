@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent } from "react";
 import Modal from "react-modal";
 import closeImg from "../../assets/fechar.svg";
 import incomeImg from "../../assets/entradas.svg";
@@ -6,21 +6,12 @@ import outcomeImg from "../../assets/saidas.svg";
 import { useTransactions } from "../../contexts/TransactionsContext";
 import { Container, RadioBox, TransactionTypeContainer } from "./styles";
 import toast from "react-hot-toast";
-interface Transaction {
-  id: number;
-  title: string;
-  category: string;
-  type: string;
-  amount: number;
-  createdAt: string;
-}
 
 export function EditTransactionModal() {
   const {
     isEditTransactionModalOpen,
     handleCloseEditTransactionModal,
-    transaction,
-    transactions,
+
     title,
     amount,
     category,
@@ -28,6 +19,7 @@ export function EditTransactionModal() {
     handleSetAmount,
     handleSetCategory,
     handleSetType,
+    deleteTransaction,
     handleSetTitle,
     id,
     editTransaction,
@@ -59,10 +51,6 @@ export function EditTransactionModal() {
     });
 
     handleCloseEditTransactionModal();
-    handleSetTitle("");
-    handleSetAmount(0);
-    handleSetCategory("");
-    handleSetType("deposit");
   }
 
   return (
@@ -129,9 +117,6 @@ export function EditTransactionModal() {
 
         <button type="submit" className="save">
           Salvar
-        </button>
-        <button type="button" className="delete">
-          Apagar
         </button>
       </Container>
     </Modal>

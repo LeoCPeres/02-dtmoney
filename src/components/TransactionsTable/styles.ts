@@ -21,6 +21,7 @@ export const Container = styled.div`
       background: var(--shape);
       color: var(--text-body);
       border-radius: 0.25rem 0 0 0.25rem;
+      max-width: 450px;
 
       & + td {
         border-radius: 0;
@@ -28,10 +29,16 @@ export const Container = styled.div`
 
       &.edit {
         border-radius: 0 0.25rem 0.25rem 0;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
       }
 
       &:first-child {
         color: var(--text-title);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
       &.deposit {
@@ -51,6 +58,10 @@ export const Container = styled.div`
         display: flex;
         align-items: center;
         justify-content: center;
+
+        & + button {
+          margin-left: 1rem;
+        }
       }
     }
   }

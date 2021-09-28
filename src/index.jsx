@@ -60,10 +60,10 @@ createServer({
       return schema.create("transaction", data);
     });
 
-    this.delete('/transactions/transaction:id', (schema, request) => {
+    this.delete('/transactions/:id', (schema, request) => {
       let id = request.params.id
 
-      return this.find(id).destroy();
+      return schema.transactions.find(id).destroy();
 
     });
 

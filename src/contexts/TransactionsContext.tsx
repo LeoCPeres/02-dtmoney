@@ -24,6 +24,7 @@ interface TransactionsContextData {
   transactions: Transaction[];
   isNewTransactionModalOpen: boolean;
   isEditTransactionModalOpen: boolean;
+  isDeleteTransactionModalOpen: boolean;
   title: string;
   category: string;
   type: string;
@@ -43,12 +44,15 @@ interface TransactionsContextData {
   handleOpenNewTransactionModal: () => void;
   handleCloseNewTransactionModal: () => void;
   handleOpenEditTransactionModal: (id: number) => void;
+  handleOpenDeleteTransactionModal: (id: number) => void;
   handleCloseEditTransactionModal: () => void;
+  handleCloseDeleteTransactionModal: () => void;
   handleSetTitle: (title: string) => void;
   handleSetCategory: (category: string) => void;
   handleSetAmount: (amount: number) => void;
   handleSetType: (type: string) => void;
   editTransaction: (transactionInput: TransactionEdit) => Promise<void>;
+  deleteTransaction: () => Promise<void>;
 }
 
 // interface TransactionInput {
@@ -70,6 +74,8 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
   const [isNewTransactionModalOpen, setIsNewTransactionModalOpen] =
     useState(false);
   const [isEditTransactionModalOpen, setIsEditTransactionModalOpen] =
+    useState(false);
+  const [isDeleteTransactionModalOpen, setIsDeleteTransactionModalOpen] =
     useState(false);
   const [transaction, setTransaction] = useState<Transaction>(
     {} as Transaction
@@ -138,6 +144,19 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
     setTransactions(newTransaction);
   }
 
+  async function deleteTransaction() {
+    const responseDelete = await api.delete(`/transactions/${id}`);
+
+    const filteredTransactions = transactions.filter(
+      (transaction) => transaction.id !== id
+    );
+
+    setTransactions(filteredTransactions);
+
+    console.log(responseDelete.status);
+    console.log(transactions);
+  }
+
   useEffect(() => {
     api
       .get("/transactions")
@@ -149,9 +168,19 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
       ...transactionInput,
       createdAt: new Date(),
     });
+
     const { transaction } = response.data;
 
     setTransactions([...transactions, transaction]);
+  }
+
+  function handleOpenDeleteTransactionModal(id: number) {
+    setIsDeleteTransactionModalOpen(true);
+    setTransaction(transactions[id - 1]);
+    setId(id);
+  }
+  function handleCloseDeleteTransactionModal() {
+    setIsDeleteTransactionModalOpen(false);
   }
 
   return (
@@ -168,14 +197,18 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
         handleSetAmount,
         handleSetCategory,
         handleSetTitle,
+        isDeleteTransactionModalOpen,
         editTransaction,
         handleSetType,
+        deleteTransaction,
         handleCloseEditTransactionModal,
         handleCloseNewTransactionModal,
         handleOpenEditTransactionModal,
         handleOpenNewTransactionModal,
         isEditTransactionModalOpen,
         isNewTransactionModalOpen,
+        handleOpenDeleteTransactionModal,
+        handleCloseDeleteTransactionModal,
       }}
     >
       {children}
