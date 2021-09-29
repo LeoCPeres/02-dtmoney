@@ -40,7 +40,6 @@ Este é um projeto desenvolvido durante o **[Ignite](https://www.rocketseat.com.
     <li>Styled Components</li>
     <li>MirageJS</li>
     <li>Axios</li>
-    <li>MirageJS</li>
     <li>Typescript</li>
 </ul>
 <p>👉 Figma layout design by <a href="https://www.instagram.com/tiagoluchtenberg/">Tiago Luchtenberg</a>: <a href="https://www.figma.com/file/yuYa33S45zd8wjutYmef34/dtmoney-Ignite?node-id=0%3A1">dt money</a> </p>
